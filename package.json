@@ -6,8 +6,6 @@
   "scripts": {
     "dev": "npx --yes serve . -p 3000",
     "start": "npx --yes serve . -p 3000",
-    "sync:privacy": "python3 scripts/sync-privacy.py",
-    "deploy": "npx --yes vercel deploy --prod --yes",
-    "sync:privacy:deploy": "npm run sync:privacy && npm run deploy"
+    "sync:privacy": "python3 scripts/sync-privacy.py"
   }
 }
