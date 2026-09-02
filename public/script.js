@@ -23,6 +23,9 @@ const copy = {
       "Diapositives couplet par couplet, prêtes pour l’écran du sanctuaire.",
     downloadTitle: "Emportez le cantique avec vous",
     downloadBody: "Gratuit sur Google Play pour téléphones et tablettes Android.",
+    downloadBodyApk:
+      "Édition Mobile Money — téléchargez l’APK pour Android.",
+    apkDownloadLabel: "Télécharger l'app",
     footerBrand: "FGM Hymnals · Officiel · MM",
     privacy: "Politique de confidentialité",
     backHome: "Retour à l’accueil",
@@ -30,7 +33,12 @@ const copy = {
     pageTitlePrivacy: "Politique de confidentialité — FGM Hymnals",
     pageTitleFull: "FGM Hymnals — Fonctionnalités",
     pageTitleHome: "FGM Hymnals — Officiel",
+    pageTitleDownload: "Télécharger — FGM Hymnals",
+    pageTitleAuth: "Retour à l’app — FGM Hymnals",
     playBadgeAlt: "Disponible sur Google Play",
+    authCompleteTitle: "Retournez dans l’app",
+    authCompleteBody:
+      "Votre lien de connexion a été ouvert. Revenez dans FGM Hymnals pour continuer.",
   },
   en: {
     navCta: "Get on Google Play",
@@ -54,6 +62,9 @@ const copy = {
     f4Body: "Verse-by-verse slides ready for the sanctuary screen.",
     downloadTitle: "Carry the hymnbook with you",
     downloadBody: "Free on Google Play for Android phones and tablets.",
+    downloadBodyApk:
+      "Mobile Money edition — download the APK for Android.",
+    apkDownloadLabel: "Download the app",
     footerBrand: "FGM Hymnals · Official · MM",
     privacy: "Privacy Policy",
     backHome: "Back to home",
@@ -61,9 +72,18 @@ const copy = {
     pageTitlePrivacy: "Privacy Policy — FGM Hymnals",
     pageTitleFull: "FGM Hymnals — Features",
     pageTitleHome: "FGM Hymnals — Official",
+    pageTitleDownload: "Download — FGM Hymnals",
+    pageTitleAuth: "Return to the app — FGM Hymnals",
     playBadgeAlt: "Get it on Google Play",
+    authCompleteTitle: "Return to the app",
+    authCompleteBody:
+      "Your sign-in link was opened. Switch back to FGM Hymnals to continue.",
   },
 };
+
+function isApkChannel() {
+  return document.documentElement.dataset.downloadChannel === "apk";
+}
 
 function applyLang(lang) {
   const resolved = lang === "fr" ? "fr" : "en";
@@ -71,7 +91,10 @@ function applyLang(lang) {
   document.documentElement.lang = resolved;
 
   document.querySelectorAll("[data-i18n]").forEach((el) => {
-    const key = el.getAttribute("data-i18n");
+    let key = el.getAttribute("data-i18n");
+    if (key === "downloadBody" && isApkChannel()) {
+      key = "downloadBodyApk";
+    }
     if (dict[key]) el.textContent = dict[key];
   });
 
@@ -88,12 +111,13 @@ function applyLang(lang) {
 
   document.querySelectorAll("[data-play-badge]").forEach((img) => {
     const show = img.getAttribute("data-play-badge") === resolved;
-    img.hidden = !show;
+    img.hidden = isApkChannel() || !show;
     if (show && dict.playBadgeAlt) img.alt = dict.playBadgeAlt;
   });
 
   document.querySelectorAll(".play-badge").forEach((a) => {
-    if (dict.playBadgeAlt) a.setAttribute("aria-label", dict.playBadgeAlt);
+    const label = isApkChannel() ? dict.apkDownloadLabel : dict.playBadgeAlt;
+    if (label) a.setAttribute("aria-label", label);
   });
 
   document.querySelectorAll(".lang-btn").forEach((btn) => {
@@ -106,6 +130,10 @@ function applyLang(lang) {
     document.title = dict.pageTitleFull;
   } else if (document.body.classList.contains("page-lite") && dict.pageTitleHome) {
     document.title = dict.pageTitleHome;
+  } else if (document.body.classList.contains("page-download") && dict.pageTitleDownload) {
+    document.title = dict.pageTitleDownload;
+  } else if (document.body.classList.contains("page-auth") && dict.pageTitleAuth) {
+    document.title = dict.pageTitleAuth;
   }
 
   try {
@@ -114,6 +142,8 @@ function applyLang(lang) {
     /* ignore */
   }
 }
+
+window.applyFgmLang = applyLang;
 
 // Default language is English. Keep a prior explicit choice if present.
 const saved = (() => {

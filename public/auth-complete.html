@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Return to FGM Hymnals to finish signing in." />
+  <meta name="theme-color" content="#141210" />
+  <meta property="og:title" content="Return to the app — FGM Hymnals" />
+  <meta property="og:description" content="Your sign-in link was opened. Return to the app to continue." />
+  <meta property="og:image" content="/logo.png" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="/logo.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+  <title>Return to the app — FGM Hymnals</title>
+</head>
+
+<body class="page-auth">
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="top">
+    <a class="brand-mark" href="/" aria-label="FGM Hymnals">
+      <img src="/logo.png" width="36" height="36" alt="" />
+      <span>FGM Hymnals</span>
+    </a>
+    <div class="top-actions">
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="en" class="lang-btn is-active">EN</button>
+        <button type="button" data-lang="fr" class="lang-btn">FR</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="auth-complete">
+    <div class="auth-complete-card">
+      <img class="auth-complete-logo" src="/logo.png" width="72" height="72" alt="" />
+      <h1 data-i18n="authCompleteTitle">Return to the app</h1>
+      <p data-i18n="authCompleteBody">
+        Your sign-in link was opened. Switch back to FGM Hymnals to continue.
+      </p>
+      <p class="auth-complete-links">
+        <a href="/" data-i18n="backHome">Back to home</a>
+        ·
+        <a href="/privacy" data-i18n="privacy">Privacy Policy</a>
+      </p>
+    </div>
+  </main>
+
+  <script src="/script.js" defer></script>
+</body>
+
+</html>
