@@ -1,9 +1,11 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
 import {
   getAuth,
+  getRedirectResult,
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
+  signInWithRedirect,
   signOut,
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
@@ -25,6 +27,9 @@ const copy = {
     statsErrorLoad: "Could not load metrics. Try again.",
     statsErrorAuth: "This Google account is not authorized.",
     statsErrorSignIn: "Sign-in failed. Try again.",
+    statsErrorDomain: "This site is not authorized in Firebase Authentication.",
+    statsErrorProvider: "Google sign-in is not enabled in Firebase.",
+    statsErrorNetwork: "Network error. Check your connection and try again.",
     statsPeriodToday: "Today",
     statsPeriod7: "Last 7 days",
     statsPeriod30: "Last 30 days",
@@ -59,6 +64,11 @@ const copy = {
     statsErrorLoad: "Impossible de charger les métriques. Réessayez.",
     statsErrorAuth: "Ce compte Google n’est pas autorisé.",
     statsErrorSignIn: "Échec de la connexion. Réessayez.",
+    statsErrorDomain:
+      "Ce site n’est pas autorisé dans Firebase Authentication.",
+    statsErrorProvider: "La connexion Google n’est pas activée dans Firebase.",
+    statsErrorNetwork:
+      "Erreur réseau. Vérifiez votre connexion puis réessayez.",
     statsPeriodToday: "Aujourd’hui",
     statsPeriod7: "7 derniers jours",
     statsPeriod30: "30 derniers jours",
@@ -96,6 +106,16 @@ function lang() {
 
 function t(key) {
   return copy[lang()][key] || copy.en[key] || key;
+}
+
+function authErrorMessage(error) {
+  const code = error?.code || "auth/unknown";
+  const keys = {
+    "auth/unauthorized-domain": "statsErrorDomain",
+    "auth/operation-not-allowed": "statsErrorProvider",
+    "auth/network-request-failed": "statsErrorNetwork",
+  };
+  return `${t(keys[code] || "statsErrorSignIn")} (${code})`;
 }
 
 function esc(value) {
@@ -446,9 +466,26 @@ signInBtn.addEventListener("click", async () => {
   setLoading(true);
   try {
     await signInWithPopup(auth, provider);
-  } catch (_) {
+  } catch (error) {
+    const redirectFallback = new Set([
+      "auth/popup-blocked",
+      "auth/popup-closed-by-user",
+      "auth/cancelled-popup-request",
+      "auth/operation-not-supported-in-this-environment",
+      "auth/web-storage-unsupported",
+    ]);
+    if (redirectFallback.has(error?.code)) {
+      try {
+        await signInWithRedirect(auth, provider);
+        return;
+      } catch (redirectError) {
+        setLoading(false);
+        showGate(authErrorMessage(redirectError));
+        return;
+      }
+    }
     setLoading(false);
-    showGate(t("statsErrorSignIn"));
+    showGate(authErrorMessage(error));
   }
 });
 
@@ -464,6 +501,11 @@ onAuthStateChanged(auth, (user) => {
     return;
   }
   loadDashboard(user);
+});
+
+getRedirectResult(auth).catch((error) => {
+  setLoading(false);
+  showGate(authErrorMessage(error));
 });
 
 document.addEventListener("DOMContentLoaded", () => {
