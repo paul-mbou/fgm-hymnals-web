@@ -2,7 +2,7 @@
   "name": "fgm-hymnals-web",
   "private": true,
   "version": "1.0.0",
-  "description": "Landing page for FGM Hymnals (Google Play)",
+  "description": "Landing page for FGM Hymnals • Official • MM (Google Play)",
   "scripts": {
     "dev": "npx --yes serve . -p 3000",
     "start": "npx --yes serve . -p 3000",

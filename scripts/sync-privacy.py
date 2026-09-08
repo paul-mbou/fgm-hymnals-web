@@ -148,10 +148,10 @@ def build_page(en_html: str, fr_html: str) -> str:
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description"
-    content="Privacy Policy for FGM Hymnals — Official Full Gospel Mission hymnbook app." />
+    content="Privacy Policy for FGM Hymnals • Official • MM — official Full Gospel Mission hymnbook app." />
   <meta name="theme-color" content="#141210" />
-  <meta property="og:title" content="Privacy Policy — FGM Hymnals" />
-  <meta property="og:description" content="How FGM Hymnals collects, uses, and protects your data." />
+  <meta property="og:title" content="Privacy Policy — FGM Hymnals • Official • MM" />
+  <meta property="og:description" content="How FGM Hymnals • Official • MM collects, uses, and protects your data." />
   <meta property="og:image" content="/logo.png" />
   <meta property="og:type" content="website" />
   <link rel="icon" href="/logo.png" type="image/png" />
@@ -161,16 +161,16 @@ def build_page(en_html: str, fr_html: str) -> str:
     href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
-  <title>Privacy Policy — FGM Hymnals</title>
+  <title>Privacy Policy — FGM Hymnals • Official • MM</title>
 </head>
 
 <body class="page-privacy">
   <div class="grain" aria-hidden="true"></div>
 
   <header class="top">
-    <a class="brand-mark" href="/" aria-label="FGM Hymnals" data-i18n-aria-label="appName">
+    <a class="brand-mark" href="/" aria-label="FGM Hymnals • Official • MM" data-i18n-aria-label="appName">
       <img src="/logo.png" width="36" height="36" alt="" />
-      <span data-i18n="appName">FGM Hymnals</span>
+      <span data-i18n="appName">FGM Hymnals • Official • MM</span>
     </a>
     <div class="top-actions">
       <div class="lang" role="group" aria-label="Language">
@@ -192,7 +192,7 @@ def build_page(en_html: str, fr_html: str) -> str:
 
   <footer class="foot">
     <p>
-      <span data-i18n="footerBrand">FGM Hymnals · Official · MM</span>
+      <span data-i18n="footerBrand">FGM Hymnals • Official • MM</span>
     </p>
     <p>
       <a href="/" data-i18n="backHome">Back to home</a>

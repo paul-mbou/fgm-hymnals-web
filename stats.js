@@ -50,7 +50,7 @@ const copy = {
     statsFunnelSuccess: "Paid",
     statsFunnelFailed: "Failed / expired",
     statsEmpty: "No data yet",
-    statsPageTitle: "Stats — FGM Hymnals",
+    statsPageTitle: "Stats — FGM Hymnals • Official • MM",
     statusSucceeded: "Succeeded",
     statusFailed: "Failed",
     statusPending: "Pending",
@@ -89,7 +89,7 @@ const copy = {
     statsFunnelSuccess: "Payé",
     statsFunnelFailed: "Échoué / expiré",
     statsEmpty: "Pas encore de données",
-    statsPageTitle: "Statistiques — MPE Cantiques",
+    statsPageTitle: "Statistiques — MPE Cantiques • Officiel • MM",
     statusSucceeded: "Réussi",
     statusFailed: "Échoué",
     statusPending: "En attente",
@@ -380,8 +380,8 @@ function renderBreakdown(elId, map) {
         <div class="stats-breakdown-row">
           <div class="stats-breakdown-label">
             <span>${esc(
-              elId === "stats-status" ? statusLabel(key) : key,
-            )}</span>
+        elId === "stats-status" ? statusLabel(key) : key,
+      )}</span>
             <strong>${fmtNum(value)}</strong>
           </div>
           <div class="stats-breakdown-bar" style="--w:${width}%"></div>
