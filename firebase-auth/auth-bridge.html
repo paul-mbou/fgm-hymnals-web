@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Google sign-in — FGM Hymnals</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: system-ui, sans-serif;
+        background: #141210;
+        color: #f7f1ea;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        text-align: center;
+      }
+
+      main {
+        max-width: 24rem;
+        padding: 2rem;
+      }
+
+      p {
+        color: rgba(247, 241, 234, 0.72);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Google sign-in</h1>
+      <p id="status">Opening Google…</p>
+    </main>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+      import {
+        getAuth,
+        getRedirectResult,
+        GoogleAuthProvider,
+        signInWithRedirect,
+      } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+      const DASHBOARD_ORIGIN = "https://fgm-hymnals-web.vercel.app";
+      const firebaseConfig = {
+        apiKey: "AIzaSyBW4jwt8hVQ7uXU1Mg06Ppj4_zUYjBezXw",
+        authDomain: "studio-2294305185-c0b44.firebaseapp.com",
+        projectId: "studio-2294305185-c0b44",
+        appId: "1:1080412997001:web:6d84a90b1a5413d3124d58",
+        storageBucket: "studio-2294305185-c0b44.firebasestorage.app",
+        messagingSenderId: "1080412997001",
+      };
+
+      const status = document.getElementById("status");
+      const auth = getAuth(initializeApp(firebaseConfig));
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: "select_account" });
+
+      function notify(payload) {
+        if (window.opener) {
+          window.opener.postMessage(
+            { type: "fgm-stats-auth", ...payload },
+            DASHBOARD_ORIGIN,
+          );
+        }
+      }
+
+      try {
+        const result = await getRedirectResult(auth);
+        const user = result?.user || auth.currentUser;
+
+        if (user) {
+          sessionStorage.removeItem("fgm-stats-auth-started");
+          const token = await user.getIdToken(true);
+          notify({ token, email: user.email || "" });
+          status.textContent = "Connected. You can close this window.";
+          window.close();
+        } else if (!sessionStorage.getItem("fgm-stats-auth-started")) {
+          sessionStorage.setItem("fgm-stats-auth-started", "1");
+          await signInWithRedirect(auth, provider);
+        } else {
+          sessionStorage.removeItem("fgm-stats-auth-started");
+          throw Object.assign(new Error("No Google session returned"), {
+            code: "auth/no-result",
+          });
+        }
+      } catch (error) {
+        const code = error?.code || "auth/unknown";
+        notify({ error: code });
+        status.textContent = `Sign-in failed (${code}).`;
+      }
+    </script>
+  </body>
+</html>

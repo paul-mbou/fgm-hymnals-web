@@ -1,25 +1,9 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import {
-  getAuth,
-  getRedirectResult,
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  signInWithPopup,
-  signInWithRedirect,
-  signOut,
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-
 const API_BASE =
   "https://us-central1-studio-2294305185-c0b44.cloudfunctions.net/api";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBW4jwt8hVQ7uXU1Mg06Ppj4_zUYjBezXw",
-  authDomain: "studio-2294305185-c0b44.firebaseapp.com",
-  projectId: "studio-2294305185-c0b44",
-  appId: "1:1080412997001:web:6d84a90b1a5413d3124d58",
-  storageBucket: "studio-2294305185-c0b44.firebasestorage.app",
-  messagingSenderId: "1080412997001",
-};
+const AUTH_BRIDGE_ORIGIN =
+  "https://studio-2294305185-c0b44.firebaseapp.com";
+const AUTH_BRIDGE_URL = `${AUTH_BRIDGE_ORIGIN}/auth-bridge`;
+const SESSION_KEY = "fgm-stats-admin-session";
 
 const copy = {
   en: {
@@ -30,6 +14,8 @@ const copy = {
     statsErrorDomain: "This site is not authorized in Firebase Authentication.",
     statsErrorProvider: "Google sign-in is not enabled in Firebase.",
     statsErrorNetwork: "Network error. Check your connection and try again.",
+    statsErrorPopup: "Allow pop-ups for this site, then try again.",
+    statsErrorSession: "Your session expired. Sign in again.",
     statsPeriodToday: "Today",
     statsPeriod7: "Last 7 days",
     statsPeriod30: "Last 30 days",
@@ -69,6 +55,9 @@ const copy = {
     statsErrorProvider: "La connexion Google n’est pas activée dans Firebase.",
     statsErrorNetwork:
       "Erreur réseau. Vérifiez votre connexion puis réessayez.",
+    statsErrorPopup:
+      "Autorisez les fenêtres surgissantes pour ce site, puis réessayez.",
+    statsErrorSession: "Votre session a expiré. Reconnectez-vous.",
     statsPeriodToday: "Aujourd’hui",
     statsPeriod7: "7 derniers jours",
     statsPeriod30: "30 derniers jours",
@@ -114,6 +103,8 @@ function authErrorMessage(error) {
     "auth/unauthorized-domain": "statsErrorDomain",
     "auth/operation-not-allowed": "statsErrorProvider",
     "auth/network-request-failed": "statsErrorNetwork",
+    "auth/popup-blocked": "statsErrorPopup",
+    "auth/session-expired": "statsErrorSession",
   };
   return `${t(keys[code] || "statsErrorSignIn")} (${code})`;
 }
@@ -187,12 +178,36 @@ const signInBtn = document.getElementById("stats-signin");
 const signOutBtn = document.getElementById("stats-signout");
 const refreshBtn = document.getElementById("stats-refresh");
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({ prompt: "select_account" });
+let currentSession = readSession();
+let authPopup = null;
+let popupWatcher = null;
 
-let currentUser = null;
+function readSession() {
+  try {
+    const value = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null");
+    return value?.token ? value : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function saveSession(session) {
+  currentSession = session;
+  try {
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  } catch (_) {
+    /* The in-memory session still works if storage is unavailable. */
+  }
+}
+
+function clearSession() {
+  currentSession = null;
+  try {
+    sessionStorage.removeItem(SESSION_KEY);
+  } catch (_) {
+    /* ignore */
+  }
+}
 
 function showGate(message) {
   gate.hidden = false;
@@ -428,11 +443,13 @@ function renderStats(data) {
   renderRecent(data.recentPayments || []);
 }
 
-async function fetchStats(user) {
-  const token = await user.getIdToken();
+async function fetchStats(token) {
   const res = await fetch(`${API_BASE}/admin/stats`, {
     headers: { Authorization: `Bearer ${token}` },
   });
+  if (res.status === 401) {
+    throw new Error("session_expired");
+  }
   if (res.status === 403) {
     throw new Error("forbidden");
   }
@@ -442,17 +459,21 @@ async function fetchStats(user) {
   return res.json();
 }
 
-async function loadDashboard(user) {
+async function loadDashboard(session) {
   setLoading(true);
-  document.getElementById("stats-user-email").textContent = user.email || "";
+  document.getElementById("stats-user-email").textContent =
+    session.email || "";
   try {
-    const data = await fetchStats(user);
+    const data = await fetchStats(session.token);
     renderStats(data);
     showDashboard();
   } catch (err) {
     if (err.message === "forbidden") {
-      await signOut(auth);
+      clearSession();
       showGate(t("statsErrorAuth"));
+    } else if (err.message === "session_expired") {
+      clearSession();
+      showGate(authErrorMessage({ code: "auth/session-expired" }));
     } else {
       showGate(t("statsErrorLoad"));
     }
@@ -464,49 +485,75 @@ async function loadDashboard(user) {
 signInBtn.addEventListener("click", async () => {
   gateError.hidden = true;
   setLoading(true);
-  try {
-    await signInWithPopup(auth, provider);
-  } catch (error) {
-    const redirectFallback = new Set([
-      "auth/popup-blocked",
-      "auth/popup-closed-by-user",
-      "auth/cancelled-popup-request",
-      "auth/operation-not-supported-in-this-environment",
-      "auth/web-storage-unsupported",
-    ]);
-    if (redirectFallback.has(error?.code)) {
-      try {
-        await signInWithRedirect(auth, provider);
-        return;
-      } catch (redirectError) {
-        setLoading(false);
-        showGate(authErrorMessage(redirectError));
-        return;
-      }
-    }
+
+  authPopup = window.open(
+    AUTH_BRIDGE_URL,
+    "fgm-stats-google-auth",
+    "popup,width=520,height=700",
+  );
+  if (!authPopup) {
     setLoading(false);
-    showGate(authErrorMessage(error));
-  }
-});
-
-signOutBtn.addEventListener("click", () => signOut(auth));
-refreshBtn.addEventListener("click", () => {
-  if (currentUser) loadDashboard(currentUser);
-});
-
-onAuthStateChanged(auth, (user) => {
-  currentUser = user;
-  if (!user) {
-    showGate();
+    showGate(authErrorMessage({ code: "auth/popup-blocked" }));
     return;
   }
-  loadDashboard(user);
+
+  clearInterval(popupWatcher);
+  popupWatcher = window.setInterval(() => {
+    if (authPopup?.closed) {
+      clearInterval(popupWatcher);
+      popupWatcher = null;
+      authPopup = null;
+      setLoading(false);
+    }
+  }, 500);
 });
 
-getRedirectResult(auth).catch((error) => {
-  setLoading(false);
-  showGate(authErrorMessage(error));
+window.addEventListener("message", (event) => {
+  if (
+    event.origin !== AUTH_BRIDGE_ORIGIN ||
+    event.data?.type !== "fgm-stats-auth"
+  ) {
+    return;
+  }
+
+  clearInterval(popupWatcher);
+  popupWatcher = null;
+  authPopup?.close();
+  authPopup = null;
+
+  if (event.data.error) {
+    setLoading(false);
+    showGate(authErrorMessage({ code: event.data.error }));
+    return;
+  }
+
+  if (!event.data.token) {
+    setLoading(false);
+    showGate(authErrorMessage({ code: "auth/no-result" }));
+    return;
+  }
+
+  const session = {
+    token: event.data.token,
+    email: event.data.email || "",
+  };
+  saveSession(session);
+  loadDashboard(session);
 });
+
+signOutBtn.addEventListener("click", () => {
+  clearSession();
+  showGate();
+});
+refreshBtn.addEventListener("click", () => {
+  if (currentSession) loadDashboard(currentSession);
+});
+
+if (currentSession) {
+  loadDashboard(currentSession);
+} else {
+  showGate();
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   if (document.body.classList.contains("page-stats")) {
@@ -516,7 +563,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 window.addEventListener("fgm-lang-change", () => {
   document.title = t("statsPageTitle");
-  if (currentUser && !dashboard.hidden) {
-    loadDashboard(currentUser);
+  if (currentSession && !dashboard.hidden) {
+    loadDashboard(currentSession);
   }
 });

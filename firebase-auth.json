@@ -1,0 +1,27 @@
+{
+  "hosting": {
+    "site": "studio-2294305185-c0b44",
+    "public": "firebase-auth",
+    "cleanUrls": true,
+    "ignore": [
+      "firebase-auth.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "headers": [
+      {
+        "source": "/auth-bridge",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-store"
+          },
+          {
+            "key": "X-Robots-Tag",
+            "value": "noindex, nofollow"
+          }
+        ]
+      }
+    ]
+  }
+}
