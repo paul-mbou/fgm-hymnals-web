@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#141210" />
+    <title>Completing sign-in — FGM Hymnals</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: system-ui, sans-serif;
+        background: #141210;
+        color: #f7f1ea;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        text-align: center;
+      }
+
+      p {
+        color: rgba(247, 241, 234, 0.72);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Completing sign-in…</h1>
+      <p>You will be returned to the dashboard.</p>
+    </main>
+
+    <script>
+      (() => {
+        const params = new URLSearchParams(location.hash.slice(1));
+        const token = params.get("token");
+        const email = params.get("email") || "";
+        const error = params.get("error");
+
+        history.replaceState(null, "", location.pathname);
+
+        try {
+          if (token) {
+            sessionStorage.setItem(
+              "fgm-stats-admin-session",
+              JSON.stringify({ token, email }),
+            );
+            sessionStorage.removeItem("fgm-stats-auth-error");
+          } else {
+            sessionStorage.removeItem("fgm-stats-admin-session");
+            sessionStorage.setItem(
+              "fgm-stats-auth-error",
+              error || "auth/no-result",
+            );
+          }
+        } finally {
+          location.replace("/stats");
+        }
+      })();
+    </script>
+  </body>
+</html>

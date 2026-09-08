@@ -2,8 +2,9 @@ const API_BASE =
   "https://us-central1-studio-2294305185-c0b44.cloudfunctions.net/api";
 const AUTH_BRIDGE_ORIGIN =
   "https://studio-2294305185-c0b44.firebaseapp.com";
-const AUTH_BRIDGE_URL = `${AUTH_BRIDGE_ORIGIN}/auth-bridge`;
+const AUTH_BRIDGE_URL = `${AUTH_BRIDGE_ORIGIN}/auth-redirect`;
 const SESSION_KEY = "fgm-stats-admin-session";
+const AUTH_ERROR_KEY = "fgm-stats-auth-error";
 
 const copy = {
   en: {
@@ -179,8 +180,6 @@ const signOutBtn = document.getElementById("stats-signout");
 const refreshBtn = document.getElementById("stats-refresh");
 
 let currentSession = readSession();
-let authPopup = null;
-let popupWatcher = null;
 
 function readSession() {
   try {
@@ -485,60 +484,12 @@ async function loadDashboard(session) {
 signInBtn.addEventListener("click", async () => {
   gateError.hidden = true;
   setLoading(true);
-
-  authPopup = window.open(
-    AUTH_BRIDGE_URL,
-    "fgm-stats-google-auth",
-    "popup,width=520,height=700",
-  );
-  if (!authPopup) {
-    setLoading(false);
-    showGate(authErrorMessage({ code: "auth/popup-blocked" }));
-    return;
+  try {
+    sessionStorage.removeItem(AUTH_ERROR_KEY);
+  } catch (_) {
+    /* ignore */
   }
-
-  clearInterval(popupWatcher);
-  popupWatcher = window.setInterval(() => {
-    if (authPopup?.closed) {
-      clearInterval(popupWatcher);
-      popupWatcher = null;
-      authPopup = null;
-      setLoading(false);
-    }
-  }, 500);
-});
-
-window.addEventListener("message", (event) => {
-  if (
-    event.origin !== AUTH_BRIDGE_ORIGIN ||
-    event.data?.type !== "fgm-stats-auth"
-  ) {
-    return;
-  }
-
-  clearInterval(popupWatcher);
-  popupWatcher = null;
-  authPopup?.close();
-  authPopup = null;
-
-  if (event.data.error) {
-    setLoading(false);
-    showGate(authErrorMessage({ code: event.data.error }));
-    return;
-  }
-
-  if (!event.data.token) {
-    setLoading(false);
-    showGate(authErrorMessage({ code: "auth/no-result" }));
-    return;
-  }
-
-  const session = {
-    token: event.data.token,
-    email: event.data.email || "",
-  };
-  saveSession(session);
-  loadDashboard(session);
+  window.location.assign(AUTH_BRIDGE_URL);
 });
 
 signOutBtn.addEventListener("click", () => {
@@ -552,7 +503,14 @@ refreshBtn.addEventListener("click", () => {
 if (currentSession) {
   loadDashboard(currentSession);
 } else {
-  showGate();
+  let authError = null;
+  try {
+    authError = sessionStorage.getItem(AUTH_ERROR_KEY);
+    sessionStorage.removeItem(AUTH_ERROR_KEY);
+  } catch (_) {
+    /* ignore */
+  }
+  showGate(authError ? authErrorMessage({ code: authError }) : undefined);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
