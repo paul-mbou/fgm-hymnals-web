@@ -89,7 +89,7 @@ const copy = {
     statsFunnelSuccess: "Payé",
     statsFunnelFailed: "Échoué / expiré",
     statsEmpty: "Pas encore de données",
-    statsPageTitle: "Statistiques — FGM Hymnals",
+    statsPageTitle: "Statistiques — MPE Cantiques",
     statusSucceeded: "Réussi",
     statusFailed: "Échoué",
     statusPending: "En attente",

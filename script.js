@@ -1,5 +1,6 @@
 const copy = {
   fr: {
+    appName: "MPE Cantiques",
     navCta: "Sur Google Play",
     eyebrow: "Officiel · MM",
     lede: "Le cantique de la Full Gospel Mission sur votre téléphone — paroles, audio, partitions et projection, en français et en anglais.",
@@ -26,17 +27,17 @@ const copy = {
     downloadBodyApk:
       "Édition Mobile Money — téléchargez l’APK pour Android.",
     apkDownloadLabel: "Télécharger l'app",
-    footerBrand: "FGM Hymnals · Officiel · MM",
+    footerBrand: "MPE Cantiques · Officiel · MM",
     privacy: "Politique de confidentialité",
     stats: "Statistiques",
     backHome: "Retour à l’accueil",
     seeMore: "Voir les fonctionnalités",
-    pageTitlePrivacy: "Politique de confidentialité — FGM Hymnals",
-    pageTitleFull: "FGM Hymnals — Fonctionnalités",
-    pageTitleHome: "FGM Hymnals — Officiel",
-    pageTitleDownload: "Télécharger — FGM Hymnals",
-    pageTitleAuth: "Retour à l’app — FGM Hymnals",
-    pageTitleStats: "Statistiques — FGM Hymnals",
+    pageTitlePrivacy: "Politique de confidentialité — MPE Cantiques",
+    pageTitleFull: "MPE Cantiques — Fonctionnalités",
+    pageTitleHome: "MPE Cantiques — Officiel",
+    pageTitleDownload: "Télécharger — MPE Cantiques",
+    pageTitleAuth: "Retour à l’app — MPE Cantiques",
+    pageTitleStats: "Statistiques — MPE Cantiques",
     statsSignOut: "Se déconnecter",
     statsEyebrow: "Canal direct",
     statsTitle: "Tableau de bord",
@@ -72,9 +73,10 @@ const copy = {
     playBadgeAlt: "Disponible sur Google Play",
     authCompleteTitle: "Retournez dans l’app",
     authCompleteBody:
-      "Votre lien de connexion a été ouvert. Revenez dans FGM Hymnals pour continuer.",
+      "Votre lien de connexion a été ouvert. Revenez dans MPE Cantiques pour continuer.",
   },
   en: {
+    appName: "FGM Hymnals",
     navCta: "Get on Google Play",
     eyebrow: "Official · MM",
     lede: "The Full Gospel Mission hymnbook on your phone — lyrics, audio, sheet music and projection, in French and English.",
@@ -164,6 +166,11 @@ function applyLang(lang) {
       key = "downloadBodyApk";
     }
     if (dict[key]) el.textContent = dict[key];
+  });
+
+  document.querySelectorAll("[data-i18n-aria-label]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-aria-label");
+    if (dict[key]) el.setAttribute("aria-label", dict[key]);
   });
 
   // Privacy (and any bilingual blocks): show only the active language.
