@@ -198,6 +198,8 @@ def build_page(en_html: str, fr_html: str) -> str:
       <a href="/" data-i18n="backHome">Back to home</a>
       ·
       <a href="/privacy" data-i18n="privacy">Privacy Policy</a>
+      ·
+      <a href="/stats" data-i18n="stats">Stats</a>
     </p>
   </footer>
 

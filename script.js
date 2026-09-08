@@ -28,6 +28,7 @@ const copy = {
     apkDownloadLabel: "Télécharger l'app",
     footerBrand: "FGM Hymnals · Officiel · MM",
     privacy: "Politique de confidentialité",
+    stats: "Statistiques",
     backHome: "Retour à l’accueil",
     seeMore: "Voir les fonctionnalités",
     pageTitlePrivacy: "Politique de confidentialité — FGM Hymnals",
@@ -35,6 +36,39 @@ const copy = {
     pageTitleHome: "FGM Hymnals — Officiel",
     pageTitleDownload: "Télécharger — FGM Hymnals",
     pageTitleAuth: "Retour à l’app — FGM Hymnals",
+    pageTitleStats: "Statistiques — FGM Hymnals",
+    statsSignOut: "Se déconnecter",
+    statsEyebrow: "Canal direct",
+    statsTitle: "Tableau de bord",
+    statsSignInBody:
+      "Connectez-vous avec un compte Google autorisé pour voir les téléchargements, les paiements et les conversions de l’édition Mobile Money.",
+    statsSignIn: "Se connecter avec Google",
+    statsUpdated: "Mis à jour",
+    statsRefresh: "Actualiser",
+    statsScopeNote:
+      "Le compteur APK mesure les clics suivis depuis son activation, pas les personnes uniques ni les installations confirmées.",
+    statsFunnelTitle: "Entonnoir de conversion",
+    statsFunnelLede:
+      "Totaux depuis le début — du clic APK au paiement MoMo réussi.",
+    statsPeriodTitle: "Activité récente",
+    statsPeriodLede: "Aujourd’hui, 7 derniers jours et 30 derniers jours.",
+    statsColPeriod: "Période",
+    statsColDownloads: "Téléchargements",
+    statsColAttempts: "Tentatives",
+    statsColPurchases: "Achats",
+    statsColRevenue: "Revenu",
+    statsChartTitle: "30 derniers jours",
+    statsChartLede: "Téléchargements et achats réussis, jour par jour.",
+    statsStatusTitle: "Statut des paiements",
+    statsGatewayTitle: "Opérateurs MoMo",
+    statsGatewayLede: "Paiements réussis par opérateur.",
+    statsRecentTitle: "Paiements récents",
+    statsColDate: "Date",
+    statsColStatus: "Statut",
+    statsColAmount: "Montant",
+    statsColOperator: "Opérateur",
+    statsColEmail: "E-mail",
+    statsLoading: "Chargement des métriques…",
     playBadgeAlt: "Disponible sur Google Play",
     authCompleteTitle: "Retournez dans l’app",
     authCompleteBody:
@@ -67,6 +101,7 @@ const copy = {
     apkDownloadLabel: "Download the app",
     footerBrand: "FGM Hymnals · Official · MM",
     privacy: "Privacy Policy",
+    stats: "Stats",
     backHome: "Back to home",
     seeMore: "See features",
     pageTitlePrivacy: "Privacy Policy — FGM Hymnals",
@@ -74,6 +109,39 @@ const copy = {
     pageTitleHome: "FGM Hymnals — Official",
     pageTitleDownload: "Download — FGM Hymnals",
     pageTitleAuth: "Return to the app — FGM Hymnals",
+    pageTitleStats: "Stats — FGM Hymnals",
+    statsSignOut: "Sign out",
+    statsEyebrow: "Direct channel",
+    statsTitle: "Analytics dashboard",
+    statsSignInBody:
+      "Sign in with an authorized Google account to view downloads, payments and conversion metrics for the Mobile Money edition.",
+    statsSignIn: "Sign in with Google",
+    statsUpdated: "Updated",
+    statsRefresh: "Refresh",
+    statsScopeNote:
+      "The APK metric counts tracked clicks since activation, not unique people or confirmed installations.",
+    statsFunnelTitle: "Conversion funnel",
+    statsFunnelLede:
+      "Lifetime totals — from APK download click to successful MoMo payment.",
+    statsPeriodTitle: "Recent activity",
+    statsPeriodLede: "Today, last 7 days and last 30 days.",
+    statsColPeriod: "Period",
+    statsColDownloads: "Downloads",
+    statsColAttempts: "Attempts",
+    statsColPurchases: "Purchases",
+    statsColRevenue: "Revenue",
+    statsChartTitle: "Last 30 days",
+    statsChartLede: "Daily downloads and successful purchases.",
+    statsStatusTitle: "Payment status",
+    statsGatewayTitle: "MoMo operators",
+    statsGatewayLede: "Successful payments by operator.",
+    statsRecentTitle: "Recent payments",
+    statsColDate: "Date",
+    statsColStatus: "Status",
+    statsColAmount: "Amount",
+    statsColOperator: "Operator",
+    statsColEmail: "Email",
+    statsLoading: "Loading metrics…",
     playBadgeAlt: "Get it on Google Play",
     authCompleteTitle: "Return to the app",
     authCompleteBody:
@@ -134,6 +202,8 @@ function applyLang(lang) {
     document.title = dict.pageTitleDownload;
   } else if (document.body.classList.contains("page-auth") && dict.pageTitleAuth) {
     document.title = dict.pageTitleAuth;
+  } else if (document.body.classList.contains("page-stats") && dict.pageTitleStats) {
+    document.title = dict.pageTitleStats;
   }
 
   try {
@@ -141,6 +211,8 @@ function applyLang(lang) {
   } catch (_) {
     /* ignore */
   }
+
+  window.dispatchEvent(new CustomEvent("fgm-lang-change"));
 }
 
 window.applyFgmLang = applyLang;

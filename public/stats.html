@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="FGM Hymnals direct channel analytics." />
+  <meta name="theme-color" content="#141210" />
+  <link rel="icon" href="/logo.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+  <title>Stats — FGM Hymnals</title>
+</head>
+
+<body class="page-stats">
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="top">
+    <a class="brand-mark" href="/" aria-label="FGM Hymnals">
+      <img src="/logo.png" width="36" height="36" alt="" />
+      <span>FGM Hymnals</span>
+    </a>
+    <div class="top-actions">
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="en" class="lang-btn is-active">EN</button>
+        <button type="button" data-lang="fr" class="lang-btn">FR</button>
+      </div>
+      <button type="button" class="stats-signout" id="stats-signout" hidden data-i18n="statsSignOut">
+        Sign out
+      </button>
+    </div>
+  </header>
+
+  <main class="stats-shell">
+    <section class="stats-gate" id="stats-gate">
+      <div class="stats-gate-card">
+        <p class="eyebrow" data-i18n="statsEyebrow">Direct channel</p>
+        <h1 data-i18n="statsTitle">Analytics dashboard</h1>
+        <p data-i18n="statsSignInBody">
+          Sign in with an authorized Google account to view downloads, payments
+          and conversion metrics for the Mobile Money edition.
+        </p>
+        <button type="button" class="apk-download-btn apk-download-btn-primary stats-google-btn" id="stats-signin">
+          <span data-i18n="statsSignIn">Sign in with Google</span>
+        </button>
+        <p class="stats-gate-note" id="stats-gate-error" hidden></p>
+      </div>
+    </section>
+
+    <section class="stats-dashboard" id="stats-dashboard" hidden>
+      <div class="stats-head">
+        <div>
+          <p class="eyebrow" data-i18n="statsEyebrow">Direct channel</p>
+          <h1 data-i18n="statsTitle">Analytics dashboard</h1>
+          <p class="stats-meta">
+            <span data-i18n="statsUpdated">Updated</span>
+            <time id="stats-generated-at">—</time>
+            ·
+            <span id="stats-user-email"></span>
+          </p>
+        </div>
+        <button type="button" class="stats-refresh" id="stats-refresh" data-i18n="statsRefresh">
+          Refresh
+        </button>
+      </div>
+
+      <p class="stats-scope-note" data-i18n="statsScopeNote">
+        The APK metric counts tracked clicks since activation, not unique people
+        or confirmed installations.
+      </p>
+
+      <div class="stats-kpis" id="stats-kpis"></div>
+
+      <div class="stats-grid">
+        <section class="stats-panel">
+          <h2 data-i18n="statsFunnelTitle">Conversion funnel</h2>
+          <p class="stats-panel-lede" data-i18n="statsFunnelLede">
+            Lifetime totals — from APK download click to successful MoMo payment.
+          </p>
+          <div class="stats-funnel" id="stats-funnel"></div>
+          <dl class="stats-conversion" id="stats-conversion"></dl>
+        </section>
+
+        <section class="stats-panel">
+          <h2 data-i18n="statsPeriodTitle">Recent activity</h2>
+          <p class="stats-panel-lede" data-i18n="statsPeriodLede">
+            Today, last 7 days and last 30 days.
+          </p>
+          <div class="stats-period-table-wrap">
+            <table class="stats-table stats-period-table" id="stats-periods">
+              <thead>
+                <tr>
+                  <th data-i18n="statsColPeriod">Period</th>
+                  <th data-i18n="statsColDownloads">Downloads</th>
+                  <th data-i18n="statsColAttempts">Attempts</th>
+                  <th data-i18n="statsColPurchases">Purchases</th>
+                  <th data-i18n="statsColRevenue">Revenue</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <section class="stats-panel stats-panel-wide">
+        <h2 data-i18n="statsChartTitle">Last 30 days</h2>
+        <p class="stats-panel-lede" data-i18n="statsChartLede">
+          Daily downloads and successful purchases.
+        </p>
+        <div class="stats-chart" id="stats-chart" role="img" aria-label="30-day chart"></div>
+        <div class="stats-chart-legend">
+          <span><i class="stats-dot stats-dot-downloads"></i><span data-i18n="statsColDownloads">Downloads</span></span>
+          <span><i class="stats-dot stats-dot-purchases"></i><span data-i18n="statsColPurchases">Purchases</span></span>
+        </div>
+      </section>
+
+      <div class="stats-grid">
+        <section class="stats-panel">
+          <h2 data-i18n="statsStatusTitle">Payment status</h2>
+          <div class="stats-breakdown" id="stats-status"></div>
+        </section>
+
+        <section class="stats-panel">
+          <h2 data-i18n="statsGatewayTitle">MoMo operators</h2>
+          <p class="stats-panel-lede" data-i18n="statsGatewayLede">Successful payments by operator.</p>
+          <div class="stats-breakdown" id="stats-gateways"></div>
+        </section>
+      </div>
+
+      <section class="stats-panel stats-panel-wide">
+        <h2 data-i18n="statsRecentTitle">Recent payments</h2>
+        <div class="stats-period-table-wrap">
+          <table class="stats-table stats-recent-table" id="stats-recent">
+            <thead>
+              <tr>
+                <th data-i18n="statsColDate">Date</th>
+                <th data-i18n="statsColStatus">Status</th>
+                <th data-i18n="statsColAmount">Amount</th>
+                <th data-i18n="statsColOperator">Operator</th>
+                <th data-i18n="statsColEmail">Email</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <p class="stats-loading" id="stats-loading" hidden data-i18n="statsLoading">Loading metrics…</p>
+  </main>
+
+  <footer class="foot">
+    <p>
+      <span data-i18n="footerBrand">FGM Hymnals · Official · MM</span>
+    </p>
+    <p>
+      <a href="/" data-i18n="backHome">Back to home</a>
+      ·
+      <a href="/privacy" data-i18n="privacy">Privacy Policy</a>
+      ·
+      <a href="/stats" data-i18n="stats">Stats</a>
+    </p>
+  </footer>
+
+  <script src="/script.js" defer></script>
+  <script src="/stats.js" type="module"></script>
+</body>
+
+</html>
