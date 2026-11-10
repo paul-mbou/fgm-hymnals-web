@@ -5,7 +5,7 @@ const copy = {
     eyebrow: "Officiel · MM",
     lede: "Le cantique de la Full Gospel Mission sur votre téléphone — paroles, audio, partitions et projection, en français et en anglais.",
     ledeLite:
-      "Le cantique de la Full Gospel Mission — paroles, audio, partitions et projection, en français et en anglais.",
+      "Le cantique officiel de la Full Gospel Mission — paroles, audio, partitions et projection.",
     ctaSmall: "Disponible sur",
     featuresTitle: "Pensé pour le culte",
     featuresLede:
@@ -81,7 +81,7 @@ const copy = {
     eyebrow: "Official · MM",
     lede: "The Full Gospel Mission hymnbook on your phone — lyrics, audio, sheet music and projection, in French and English.",
     ledeLite:
-      "The Full Gospel Mission hymnbook — lyrics, audio, sheet music and projection, in French and English.",
+      "The official Full Gospel Mission hymnbook — lyrics, audio, sheet music and projection.",
     ctaSmall: "Get it on",
     featuresTitle: "Built for worship",
     featuresLede:
