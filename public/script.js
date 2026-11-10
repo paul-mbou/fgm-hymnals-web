@@ -1,6 +1,7 @@
 const copy = {
   fr: {
     appName: "MPE Cantiques • Officiel • MM",
+    heroTitle: "MPE Cantiques",
     navCta: "Sur Google Play",
     eyebrow: "Officiel · MM",
     lede: "Le cantique de la Full Gospel Mission sur votre téléphone — paroles, audio, partitions et projection, en français et en anglais.",
@@ -77,6 +78,7 @@ const copy = {
   },
   en: {
     appName: "FGM Hymnals • Official • MM",
+    heroTitle: "FGM Hymnals",
     navCta: "Get on Google Play",
     eyebrow: "Official · MM",
     lede: "The Full Gospel Mission hymnbook on your phone — lyrics, audio, sheet music and projection, in French and English.",
