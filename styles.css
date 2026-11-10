@@ -675,6 +675,12 @@ main,
   animation: rise 1s var(--ease) both;
 }
 
+.lite-logo.lite-mockup {
+  width: min(58%, 280px);
+  border-radius: 0;
+  filter: drop-shadow(0 24px 40px rgba(0, 0, 0, 0.45));
+}
+
 .lite-copy {
   animation: rise 0.85s var(--ease) both;
 }
