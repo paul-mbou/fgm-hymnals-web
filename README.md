@@ -3,9 +3,7 @@
 **Public page for the official Full Gospel Mission hymnbook.**
 Page de présentation de l’application : paroles, audio, partitions et projection, en français et en anglais.
 
-![FGM Hymnals](public/og-cover-v3.png)
-
-![Home on a phone](public/app-screen-home.png)
+![Accueil en ligne](docs/portfolio/home.png)
 
 **Live:** [fgm-hymnals-web.vercel.app](https://fgm-hymnals-web.vercel.app)
 
